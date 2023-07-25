@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Tài liệu</title>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <h2>{{persons.slice(1)}}</h2>
+        <input type="text" v-model="message">
+        <select v-model="bestFramework">
+            <option value="vuejs">Vuejs</option>
+            <option value="reactjs">ReactJS</option>
+            <option value="angular">angular</option>
+        </select>
+        <h1 v-if="bestFramework==='vuejs'"> abc</h1>
+        <h1 v-else-if="bestFramework==='reactjs'"> def</h1>
+        <h1 v-else-if="bestFramework==='angular'"> gui</h1>
+        <ul>
+            <div v-for="person in persons">
+                <li  v-if="person.age > 1">
+                {{ person.name }}
+                </li>
+            </div>
+            
+        </ul>
+    </div>
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    bestFramework:"vuejs",
+                    message: 'Xin chào Vue.js!',
+                    html: '<h2>ebcd<h2>',
+                    persons: [
+                        { name: 'a', age: 1 },
+                        { name: 'b', age: 2 },
+                        { name: 'c', age: 3 },
+                    ],
+                };
+            },
+        }).mount('#app');
+    </script>
+</body>
+</html>

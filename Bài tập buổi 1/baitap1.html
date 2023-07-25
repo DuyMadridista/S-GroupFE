@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <div style="display: flex;">
+                <div v-for="(attribute, index) in attributes">
+                    <button :id="index" @click="changeColor(attribute, index)">{{attribute}}</button>
+                </div>
+            </div>
+
+            <div>You are chossing <span
+                    style="color: yellow;background-color: red;">{{chossing}}</span></div>
+        </div>
+
+    </body>
+    <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    createApp({
+    data() {
+            return {
+                attributes: [
+                    "home",
+                    "about",
+                    "service",
+                    "contact us"
+                ],
+                chossing: 'Hello Vue!',
+                preBut:null,
+            }
+        },
+        methods: {
+            changeColor(attribute, index) {
+                this.chossing = attribute;
+                if (this.preBut !== null) {
+                    this.preBut.style.backgroundColor = "";
+                }
+                this.preBut=document.getElementById(index);
+                this.preBut.style.backgroundColor = "red";
+            }
+        }
+    }).mount('#app')
+</script>
+</html>
