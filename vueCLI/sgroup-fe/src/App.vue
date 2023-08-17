@@ -1,7 +1,5 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import NavBar from './components/layout/NavBar.vue';
-import SideBar from './components/layout/SideBar.vue';
+
 
 
 </script>

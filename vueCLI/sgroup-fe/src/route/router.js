@@ -9,14 +9,15 @@ import ResetPassword from '../components/auth/ResetPassword.vue';
 import DashBoard from '../components/layout/DashBoard.vue'
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: LoginForm,
   },
   {
-    path: '/dashboard',
+    path: '/',
     name: 'dashboard',
     component: DashBoard,
+    meta: { requiresAuth: true },
   },
   {
     path: '/reset-pass/:email',
@@ -41,6 +42,17 @@ const router = createRouter({
     return { top: 0 }
   },
   routes,
+})
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = localStorage.getItem('accessToken');
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login'); // Redirect to login if user is not logged in and accessing a route that requires authentication
+  } else if (to.name === 'login' && isLoggedIn) {
+    next('/'); // Redirect to dashboard if user is logged in and tries to access login page
+  } else {
+    next(); // Continue navigation
+  }
 })
 
 export default router

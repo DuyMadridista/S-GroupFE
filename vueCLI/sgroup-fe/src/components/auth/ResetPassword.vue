@@ -75,7 +75,7 @@ const resetPassword = async () => {
             type: "success",
         });
         // Chuyển hướng về trang chủ hoặc nơi bạn muốn sau khi đặt lại mật khẩu thành công
-        router.push('/');
+        router.push('/login');
     } catch (error) {
         console.error(error);
         errorMessage.value = error.response.data.message;

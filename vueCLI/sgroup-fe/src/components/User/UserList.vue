@@ -1,222 +1,172 @@
 <template>
-    <div @click="closeAllPopup()" class="ml-40">
+    <div @click="closeAllPopup" class="ml-40">
         <div class="flex items-center justify-between">
-            <input type="text" class="px-3 py-2 h-10 m-8 border rounded" placeholder="Search User"
-                @input="(event) => (search = event.target.value)" />
+            <input v-model="search" class="px-3 py-2 h-10 m-8 border rounded" placeholder="Search User" />
             <button @click.prevent="showCreatePopup"
                 class="py-2 h-10 m-8 border rounded px-3 bg-sky-600 text-white cursor-pointer">
                 + Create New
             </button>
         </div>
-        <div>
-            <table class="w-4/5 mx-auto px-8">
-                <thead class="text-xs text-gray-700 uppercase py-4 bg-white">
-                    <tr scope="col" class="px-6 py-3 bg-white">
-                        <th v-for="(column, index) in tableColumns" :key="index">
-                            {{ column }}
-                        </th>
-                    </tr>
-                </thead>
-                <!-- Table Body -->
-                <tbody>
-                    <UserRow v-for="(user, index) in displayUsers" :key="user.id" :user="user"
-                        :getStatusText="getStatusText" :isPopUp="isPopUp" :showPopup="showPopup" :index="index" />
-                </tbody>
-            </table>
-        </div>
+        <table class="w-4/5 mx-auto px-8">
+            <thead class="text-xs text-gray-700 uppercase py-4 bg-white">
+                <tr scope="col" class="px-6 py-3 bg-white">
+                    <th v-for="(column, index) in tableColumns" :key="index">
+                        {{ column }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <UserRow v-for="(user, index) in filteredUsers" :key="user.id" :user="user" :getStatusText="getStatusText"
+                    :showPopup="showPopup" :index="index" @edit="showEditPopup" @delete="onDelete" />
+            </tbody>
+        </table>
     </div>
     <!-- Create New User Popup -->
-    <div v-if="isCreatePopupVisible"
-        class="fixed pt-20 top-0 left-0 flex items-center justify-center w-full h-full bg-gray-800 bg-opacity-50">
-        <div class="bg-white p-8 rounded-lg w-96">
-            <h2 class="text-lg font-semibold mb-4">Create New User</h2>
-            <form @submit.prevent="createNewUser">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Username:</label>
-                    <input v-model="newUserData.username" type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200" />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Password:</label>
-                    <input v-model="newUserData.password" type="password"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200" />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Name:</label>
-                    <input v-model="newUserData.name" type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200" />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Age:</label>
-                    <input v-model="newUserData.age" type="text"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200" />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Email:</label>
-                    <input v-model="newUserData.email" type="email"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200" />
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Gender:</label>
-                    <select v-model="newUserData.gender"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <!-- Add more gender options if needed -->
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Status:</label>
-                    <select v-model="newUserData.status"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200">
-                        <option value="2">Active</option>
-                        <option value="0">Inactive</option>
-                        <option value="1">Pending</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Role:</label>
-                    <select v-model="newUserData.role"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-400 focus:ring focus:ring-sky-200">
-                        <option value=1>User</option>
-                        <option value=2>Moderator</option>
-                        <option value=3>Admin</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700">Avatar:</label>
-                    <input type="file" @change="handleAvatarChange" class="mt-1 block w-full" />
-                </div>
-                <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded-md">Create</button>
-                    <button @click.prevent="closeCreatePopup" class="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <CreateUserPopup v-if="shouldShowPopup()" :isVisible="isCreatePopupVisible" :getUserByID="UserToEdit"
+        :EditedID="EditedID" :isEdit="isEdit" @close="closeCreatePopup" @createNewUser="createNewUser"
+        @updateUser="updateUser" />
 </template>
+
 <script>
-import { ref, computed, onBeforeMount } from 'vue'
-import axios from 'axios'
-import UserRow from './UserRow.vue'
+import { ref, computed, onBeforeMount } from 'vue';
+import axios from 'axios';
+import UserRow from './UserRow.vue';
+import CreateUserPopup from './CreateUserPopup.vue';
+
 export default {
+    components: { UserRow, CreateUserPopup },
     setup() {
-        const userData = ref([])
-        const accessToken = ref('')
-        accessToken.value = JSON.parse(localStorage.getItem('accessToken'))
-        const tableColumns = ['user', 'role', 'status', 'Gender', 'actions']
-        const search = ref('')
-        const isPopUp = ref(false)
-        onBeforeMount(() => {
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken.value
+        const userData = ref([]);
+        const accessToken = ref('');
+        const search = ref('');
+        const isEdit = ref(false);
+        const isCreatePopupVisible = ref(false);
+        const EditedID = ref(null)
+        const UserToEdit = ref(null)
+        const tableColumns = ['user', 'role', 'status', 'Gender', 'actions'];
+
+        const shouldShowPopup = () => {
+            if (isEdit.value) {
+                return isCreatePopupVisible.value && UserToEdit.value !== null;
+            } else {
+                return isCreatePopupVisible.value;
+            }
+        }
+
+        const fetchUserData = async () => {
+            accessToken.value = JSON.parse(localStorage.getItem('accessToken'));
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken.value;
             axios
                 .get('http://localhost:3000/user', {})
                 .then((response) => {
-                    console.log('duy')
-                    userData.value = response.data
+                    userData.value = response.data;
+                    closeAllPopup();
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error);
+                });
+        };
+        const getUserByID = (id) => {
+            return axios.get(`http://localhost:3000/user/id/${id}`, {})
+                .then(response => {
+                    UserToEdit.value = response.data[0]
+                    console.log(UserToEdit.value);
                 })
-        })
-        const filterListUser = computed(() => {
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
+
+        onBeforeMount(() => {
+            fetchUserData();
+        });
+
+        const filteredUsers = computed(() => {
             return userData.value.filter((user) => {
-                for (const key in user) {
-                    if (typeof user[key] === 'string') {
-                        if (user[key].toLowerCase().includes(search.value.toLowerCase())) {
-                            return true
-                        }
-                    }
-                }
-                return false
-            })
-        })
+                const lowerSearch = search.value.toLowerCase();
+                return Object.values(user).some(
+                    (value) =>
+                        typeof value === 'string' && value.toLowerCase().includes(lowerSearch)
+                );
+            });
+        });
+
         const getStatusText = (status) => {
-            if (status === 2) {
-                return 'active'
-            } else if (status === 0) {
-                return 'inactive'
-            } else if (status === 1) {
-                return 'pending'
-            }
-        }
-        const displayUsers = computed(() => {
-            if (search.value === '') {
-                return userData.value
-            } else {
-                return filterListUser.value
-            }
-        })
-        const showPopup = (index) => {
-            userData.value = userData.value.map((user, idx) => {
-                if (idx === index) {
-                    if (user.popup === 'hidden') {
-                        user.popup = 'block'
-                    } else {
-                        user.popup = 'hidden'
-                    }
-                } else {
-                    user.popup = 'hidden'
-                }
-                return user
-            })
-        }
-        const onDelete = (index) => {
-            userData.value = userData.value.filter((u, id) => id !== index)
-        }
-        const closeAllPopup = () => {
-            userData.value.forEach((element) => {
-                element.popup = 'hidden'
-            })
-            isPopUp.value = false
-        }
-        const autoClosePopup = (e) => {
-            if (e.target.classList.contains('popup')) return
-            else closeAllPopup()
-        }
-        
-        const isCreatePopupVisible = ref(false)
-        const newUserData = ref({
-            username: '',
-            password: '',
-            name: '',
-            age: '',
-            email: '',
-            avatar: '',
-            gender: 'male',
-            status: 0,
-            role: 1
-
-            // Add more fields for password, name, email, gender, avatar
-        })
-
-        const showCreatePopup = () => {
-            isCreatePopupVisible.value = true
-        }
-
-        const closeCreatePopup = () => {
-            isCreatePopupVisible.value = false
-        }
-        const handleAvatarChange = (event) => {
-            const file = event.target.files[0]; // Lấy tệp hình ảnh từ sự kiện
-            newUserData.value.avatar = file; // Lưu trữ tệp trong dữ liệu Vue
+            const statusTexts = ['inactive', 'pending', 'active'];
+            return statusTexts[status];
         };
 
-        const createNewUser = async () => {
-            // Chuẩn bị dữ liệu cần gửi đến máy chủ
-            const formData = new FormData();
-            formData.append('name', newUserData.value.name);
-            formData.append('age', newUserData.value.age);
-            formData.append('gender', newUserData.value.gender);
-            formData.append('password', newUserData.value.password);
-            formData.append('email', newUserData.value.email);
-            formData.append('username', newUserData.value.username);
-            formData.append('userRole', newUserData.value.role);
-            formData.append('status', newUserData.value.status);
-            formData.append('avatar', newUserData.value.avatar);
+        const showPopup = (index) => {
+            userData.value = userData.value.map((user, idx) => {
+                user.popup = idx === index && user.popup === 'hidden' ? 'block' : 'hidden';
+                return user;
+            });
+        };
 
+        const onDelete = (index) => {
+            const shouldDelete = window.confirm("Are you sure you want to delete " + index + "?");
+            
+            if (shouldDelete) {
+                axios.delete(`http://localhost:3000/user/${index}`)
+                .then(() => {
+                    fetchUserData();
+                })
+                .catch((error) => {
+                    alert(error)
+                })
+            }
+        };
+
+        const closeAllPopup = () => {
+            userData.value.forEach((element) => {
+                element.popup = 'hidden';
+            });
+        };
+
+        const showCreatePopup = () => {
+            isCreatePopupVisible.value = true;
+            isEdit.value = false
+        };
+        const showEditPopup = (id) => {
+            EditedID.value = id
+            console.log(id);
+            isCreatePopupVisible.value = true;
+            isEdit.value = true;
+            getUserByID(id)
+        };
+        const closeCreatePopup = () => {
+            isCreatePopupVisible.value = false;
+            isEdit.value = false;
+            EditedID.value = null;
+            UserToEdit.value = null;
+        };
+        const updateUser = async (user) => {
+            try {
+                await axios.put(`http://localhost:3000/user/${user.id}`, user);
+
+                console.log("User updated successfully");
+                fetchUserData()
+                closeCreatePopup();
+            } catch (error) {
+                console.error(error);
+                // Xử lý lỗi
+            }
+        }
+        const createNewUser = async (newUserData) => {
+            console.log("newUserData", newUserData);
+            // Chuẩn bị dữ liệu cần gửi đến máy chủ
+            let formData = new FormData();
+            formData.append('name', newUserData.name);
+            formData.append('age', newUserData.age);
+            formData.append('gender', newUserData.gender);
+            formData.append('password', newUserData.password);
+            formData.append('email', newUserData.email);
+            formData.append('username', newUserData.username);
+            formData.append('userRole', newUserData.role);
+            formData.append('status', newUserData.status);
+            formData.append('avatar', newUserData.avatar);
+            console.log("duy" + formData);
             try {
                 // Gửi yêu cầu tạo người dùng mới đến máy chủ
                 await axios.post('http://localhost:3000/user', formData, {
@@ -225,19 +175,8 @@ export default {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-
-                // Sau khi tạo người dùng thành công, đóng popup và cập nhật danh sách người dùng
+                fetchUserData()
                 closeCreatePopup();
-
-                // Reset các trường dữ liệu nhập
-                newUserData.value.username = '';
-                newUserData.value.password = '';
-                newUserData.value.name = '';
-                newUserData.value.email = '';
-                newUserData.value.gender = 'male';
-                newUserData.value.role = 1;
-                newUserData.value.avatar = null;
-                newUserData.value.status = 0;
             } catch (error) {
                 console.error(error);
                 // Xử lý lỗi tạo người dùng
@@ -245,26 +184,27 @@ export default {
         };
 
 
+
         return {
-            userData,
-            tableColumns,
+            shouldShowPopup,
             search,
-            isPopUp,
-            filterListUser,
-            getStatusText,
-            displayUsers,
-            showPopup,
-            onDelete,
-            closeAllPopup,
-            autoClosePopup,
+            isEdit,
+            EditedID,
+            createNewUser,
+            updateUser,
+            tableColumns,
+            filteredUsers,
             isCreatePopupVisible,
-            newUserData,
-            handleAvatarChange,
+            getUserByID,
+            UserToEdit,
             showCreatePopup,
+            showEditPopup,
             closeCreatePopup,
-            createNewUser
-        }
+            onDelete,
+            showPopup,
+            closeAllPopup,
+            getStatusText,
+        };
     },
-    components: { UserRow }
-}
+};
 </script>

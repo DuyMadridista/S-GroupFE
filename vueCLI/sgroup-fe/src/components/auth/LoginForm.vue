@@ -90,7 +90,7 @@ export default {
                         if (response.data.token) {
                             localStorage.setItem('accessToken', JSON.stringify(response.data.token))
                             accessToken.value = JSON.parse(localStorage.getItem('accessToken'))
-                            router.push('/dashboard');
+                            router.push('/');
                         }
                         console.log('Login successfully', response.data.token)
 

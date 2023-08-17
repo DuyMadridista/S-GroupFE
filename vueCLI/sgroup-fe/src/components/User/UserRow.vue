@@ -23,7 +23,7 @@
             <span>{{ user.gender }}</span>
         </td>
         <td class="relative">
-            <button type="button" @click.stop="showPopup(index);"
+            <button type="button" @click.stop.prevent="showPopup(index);"
                 class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-md bg-gray-500 hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                 Actions
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2 -mr-1 text-violet-200 hover:text-violet-100"
@@ -35,7 +35,7 @@
             <div :id="'action-' + user.id" data-display="none" :class="user.popup"
                 class="popup  absolute right-0 w-32 mt-1 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 focus:outline-none">
                 <div class="px-1 py-1 popup">
-                    <button @click.stop="isPopUp"
+                    <button @click="OnEdit(user.id)"
                         class="popup hover:bg-gray-400 hover:text-white text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="popup w-5 h-5 mr-2 text-violet-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@
                         </svg>
                         Edit
                     </button>
-                    <button @click="onDelete(index)"
+                    <button @click.prevent.stop="onDelete(user.id)"
                         class="popup hover:bg-red-400 hover:text-white text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="popup w-5 h-5 mr-2 text-violet-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -56,28 +56,44 @@
                         Delete
                     </button>
                 </div>
-                <div @click.stop="" v-if="isPopUp" class="fixed inset-20 bg-black opacity-90">
-                    Form Edit
-                </div>
             </div>
         </td>
     </tr>
 </template>
 
 
-<script setup>
-import { defineProps } from 'vue';
-defineProps({
+<script >
+
+
+export default {
+    props: {
     user: Object,
     index: Number,
     getStatusText: Function,
-    isPopUp: Boolean,
-    showPopup: Function
-});
-const backendBaseUrl = 'http://localhost:3000';
-const getUserAvatarUrl = (backendBaseUrl, avatarFileName) => {
-    return (`${backendBaseUrl}/assets/img/${avatarFileName}`);
+    showPopup: Function,
+    },
+    emits: ['edit', 'delete'],
+    setup(props, { emit }) {
+        const onDelete = (id) => {
+            emit('delete',id);
+        };
+
+        const OnEdit =  (id) => {
+            emit('edit', id);
+
+        };
+        const backendBaseUrl = 'http://localhost:3000';
+        const getUserAvatarUrl = (backendBaseUrl, avatarFileName) => {
+        return (`${backendBaseUrl}/assets/img/${avatarFileName}`);
 }
+        return {
+            OnEdit,
+            onDelete,
+            getUserAvatarUrl,
+            backendBaseUrl
+        };
+    },
+};
 </script>
 
 

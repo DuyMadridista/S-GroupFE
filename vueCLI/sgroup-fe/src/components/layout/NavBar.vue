@@ -56,7 +56,7 @@ const togglePopup = () => {
 // Hàm xử lý đăng xuất
 const logout = () => {
             localStorage.removeItem('accessToken')
-            router.push('/')
+            router.push('/login')
 }
 // Lấy thông tin người dùng từ accessToken
 const decodedToken = jwtDecode(accessToken.value); // Giải mã accessToken
