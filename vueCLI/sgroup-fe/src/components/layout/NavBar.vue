@@ -6,7 +6,7 @@
 			</div>
 			<div class="flex flex-col">
 				<p class="text-xl font-medium">Welcome back dashboard</p>
-				<p>Hello duy, good moring!</p>
+				<p>Hello {{ userName }}, good moring!</p>
 			</div>
 			<div class="h-[50px] w-[280px] bg-[#f5f9fd] rounded-full gap-3 px-3 flex">
 				<i class="text-xl mt-[12px] text-[#969696] h-[20px] fi fi-rr-search block"></i>

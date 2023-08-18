@@ -21,7 +21,7 @@
 				<router-link to="/poll">
 					<div class="flex flex-row items-center gap-4">
 						<i class="fi fi-rr-calendar"></i>
-						<div class="font-medium text-[#bcbcbc]">Sgrup Premium</div>
+						<div class="font-medium text-[#bcbcbc]">Poll</div>
 					</div>
 				</router-link>
 			</div>
