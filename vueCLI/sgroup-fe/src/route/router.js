@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-//const DashBoard = () => import('@/views/Dashboard.vue')
-//const UserDetail = () => import('@/views/users/UserDetai.vue')
+import Poll from '../components/layout/Poll.vue'
 import LoginForm from '../components/auth/LoginForm.vue';
 import Register from '../components/auth/RegisterForm.vue';
 import UserList from '../components/User/UserList.vue';
@@ -27,11 +25,20 @@ const routes = [
   },
   {
     path: '/register',
+    name:'register',
     component: Register,
   },
   {
     path: '/user',
+    name:'user',
     component: UserList,
+    meta: { requiresAuth: true },
+  },
+    {
+      path: '/poll',
+      name:'poll',
+      component: Poll,
+      meta: { requiresAuth: true },
   },
 
 ]

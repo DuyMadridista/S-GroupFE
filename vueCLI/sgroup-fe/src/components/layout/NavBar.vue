@@ -1,6 +1,9 @@
 <template>
-	<div class=" sticky top-0 bg-white z-[999] h-[80px] border-b-[1px] pl-[300px]">
+	<div class=" sticky top-0 bg-white z-[999] h-[80px] border-b-[1px] ">
 		<div class="px-14 w-full h-full flex items-center justify-between">
+			<div>
+				<img class="w-24 rounded-full" src="../../assets/img/logoS.jpg" alt="avatar">
+			</div>
 			<div class="flex flex-col">
 				<p class="text-xl font-medium">Welcome back dashboard</p>
 				<p>Hello duy, good moring!</p>
@@ -56,7 +59,8 @@ const togglePopup = () => {
 // Hàm xử lý đăng xuất
 const logout = () => {
             localStorage.removeItem('accessToken')
-            router.push('/login')
+	router.push('/login')
+	popupVisible.value = false;
 }
 // Lấy thông tin người dùng từ accessToken
 const decodedToken = jwtDecode(accessToken.value); // Giải mã accessToken

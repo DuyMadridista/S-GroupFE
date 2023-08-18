@@ -1,6 +1,7 @@
 <template>
     <div class="max-w-md text-black mx-auto p-6 bg-blue-200 rounded shadow m-8">
         <h2 class="text-2xl font-semibold mb-4 text-center">Đăng ký</h2>
+        <router-link to="/login">Đăng nhập</router-link>
         <form @submit.prevent="submit">
             <div class="mb-4">
                 <label class="block text-sm font-medium mb-1">Họ và tên</label>

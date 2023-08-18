@@ -1,5 +1,5 @@
 <template>
-    <div @click="closeAllPopup" class="ml-40">
+    <div @click="closeAllPopup" class="ml-40" >
         <div class="flex items-center justify-between">
             <input v-model="search" class="px-3 py-2 h-10 m-8 border rounded" placeholder="Search User" />
             <button @click.prevent="showCreatePopup"

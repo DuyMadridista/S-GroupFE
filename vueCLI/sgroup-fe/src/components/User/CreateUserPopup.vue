@@ -57,13 +57,14 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Avatar:</label>
-                    <input type="file" @change="handleAvatarChange" class="mt-1 block w-full" />
+                    <input :disabled="isEdited" type="file" @change="handleAvatarChange" class="mt-1 block w-full" />
                 </div>
-                <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded-md">Create</button>
-                    <button @click.prevent="closePopup" class="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                <div class="flex justify-around">
+                    <button @click.prevent="closePopup" class="ml-2 px-4 py-2 bg-red-400 text-gray-700 rounded-md">
                         Cancel
                     </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md">Xác nhận</button>
+                    
                 </div>
             </form>
         </div>
