@@ -75,7 +75,7 @@ const getRole = (role) => {
 	if (role == 2) return "Moderator"
 	if (role == 3) return "Admin"
 }
-const backendBaseUrl = 'http://localhost:3000';
+const backendBaseUrl = import.meta.env.VITE_VUE_APP_BASE_URL;
 const getUserAvatarUrl = (backendBaseUrl, avatarFileName) => {
     return (`${backendBaseUrl}/assets/img/${avatarFileName}`);
 }

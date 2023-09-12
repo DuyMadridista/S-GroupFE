@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Poll from '../components/layout/Poll.vue'
+import Poll from '../components/layout/PollManager.vue'
 import LoginForm from '../components/auth/LoginForm.vue';
 import Register from '../components/auth/RegisterForm.vue';
 import UserList from '../components/User/UserList.vue';
 import ResetPassword from '../components/auth/ResetPassword.vue';
+import UserDetails from '../components/User/UserDetails.vue'
 import DashBoard from '../components/layout/DashBoard.vue'
 const routes = [
   {
@@ -34,7 +35,13 @@ const routes = [
     component: UserList,
     meta: { requiresAuth: true },
   },
-    {
+  {
+    path: '/user-details',
+    name: 'userDetails',
+    component: UserDetails,
+    meta: { requiresAuth: true },
+  },
+  {
       path: '/poll',
       name:'poll',
       component: Poll,

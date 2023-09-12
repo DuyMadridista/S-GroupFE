@@ -4,7 +4,7 @@
             <h2 class="text-2xl font-semibold mb-4 text-center">Đăng nhập</h2>
             <div class="flex justify-center">
                 <router-link to="/register" class="text-blue-500 hover:underline focus:outline-none">
-                    Đăng ký tài khoản mới
+                    Đăng kí tài khoản mới
                 </router-link>
 
             </div>
@@ -57,7 +57,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { notify } from "@kyvg/vue3-notification";
 import router from '../../route/router';
-
+import { useLoginStore } from '../../store';
 export default {
 
     setup() {
@@ -66,7 +66,7 @@ export default {
         const password = ref('')
         const email = ref('')
         const errorMessage = ref('')
-        const errorMail= ref('')
+        const errorMail = ref('')
         const showForgotPassword = ref(false)
         const rememberPassword = ref(false)
         const accessToken = ref('')
@@ -82,19 +82,9 @@ export default {
 
         const submit = async () => {
             try {
-                await axios.post('http://localhost:3000/auth/login', {
-                    username: username.value,
-                    password: password.value
-                })
-                    .then((response) => {
-                        if (response.data.token) {
-                            localStorage.setItem('accessToken', JSON.stringify(response.data.token))
-                            accessToken.value = JSON.parse(localStorage.getItem('accessToken'))
-                            router.push('/');
-                        }
-                        console.log('Login successfully', response.data.token)
-
-                    })
+                const LoginStore = useLoginStore();
+                await LoginStore.login(username.value, password.value);
+                router.push({ name: 'dashboard',path:"/" });
                 notify({
                     title: "Authorization",
                     text: "You have been logged in!",
@@ -115,7 +105,7 @@ export default {
         const requestPasswordReset = async () => {
             try {
                 // Gửi yêu cầu đặt lại mật khẩu dựa trên địa chỉ email
-                const response = await axios.post('http://localhost:3000/auth/forgot-password', {
+                const response = await axios.post(`${import.meta.env.VITE_VUE_APP_BASE_URL}/auth/forgot-password`, {
                     mailTo: email.value
                 });
                 console.log(response);

@@ -1,5 +1,6 @@
 <template>
-    <tr class="text-center border-b-2">
+    <tr class=" text-center border-b-2">
+        
         <td class="py-4 px-6 ">
             <div class="flex items-center text-center">
                 <img class="w-14 rounded-full" :src="getUserAvatarUrl(backendBaseUrl,user.avt)" alt="avatar">
@@ -82,7 +83,7 @@ export default {
             emit('edit', id);
 
         };
-        const backendBaseUrl = 'http://localhost:3000';
+        const backendBaseUrl = import.meta.env.VITE_VUE_APP_BASE_URL;
         const getUserAvatarUrl = (backendBaseUrl, avatarFileName) => {
         return (`${backendBaseUrl}/assets/img/${avatarFileName}`);
 }

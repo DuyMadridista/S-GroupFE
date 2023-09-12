@@ -70,7 +70,7 @@ export default {
         }
         const submit = async () => {
             try {
-                const response = await axios.post('http://localhost:3000/auth/register', {
+                const response = await axios.post(`${import.meta.env.VITE_VUE_APP_BASE_URL}/auth/register`, {
                     username: username.value,
                     password: password.value,
                     name: name.value,

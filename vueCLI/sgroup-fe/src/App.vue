@@ -16,7 +16,6 @@ const shouldShowNavigation = computed(() => {
   <main>
     <div>
       <Notifications :duration="10000" :closeOnClick="true" :reverse="true"/>
-      
       <!-- Sử dụng v-if để kiểm tra điều kiện shouldShowNavigation -->
       <template v-if="shouldShowNavigation">
         <NavBar></NavBar>

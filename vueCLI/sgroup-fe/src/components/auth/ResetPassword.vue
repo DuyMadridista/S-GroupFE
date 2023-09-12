@@ -66,7 +66,7 @@ const resetPassword = async () => {
     try {
        // Lấy giá trị email từ tham số trên URL
         console.log(email.value);
-        await axios.post('http://localhost:3000/auth/reset-password', {
+        await axios.post(`${import.meta.env.VITE_VUE_APP_BASE_URL}/auth/reset-password`, {
             email: email.value,
             passwordResetToken: verificationCode.value,
             newPassword: password.value
