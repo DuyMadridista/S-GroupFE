@@ -35,8 +35,6 @@
 <script>
 import { ref, computed, onBeforeMount } from 'vue';
 import axios from 'axios';
-import UserRow from './UserRow.vue';
-import CreateUserPopup from './CreateUserPopup.vue';
 import router from '../../route/router';
 const API_BASE_URL = import.meta.env.VITE_VUE_APP_BASE_URL;
 export default {
